@@ -1,0 +1,55 @@
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "http://nexus.mwbyd.cn/nexus/content/repositories/jichu-snapshots/") {
+                authentication(userName: "9now", password: "9now123")
+            }
+            pom.version = VERSION_NAME
+            pom.artifactId = POM_ARTIFACT_ID
+            pom.groupId = GROUP
+        }
+    }
+}
+
+task installLocal(type: Upload ) {
+    description "Installs the artifacts to the local Maven repository."
+    configuration = configurations['archives']
+    repositories {
+        mavenDeployer {
+            pom.version = VERSION_NAME
+            pom.artifactId = POM_ARTIFACT_ID
+            pom.groupId = GROUP
+            repository url: "file://${System.properties['user.home']}/.m2/repository"
+        }
+    }
+}
+
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+
+    if (JavaVersion.current().isJava8Compatible()) {
+        allprojects {
+            tasks.withType(Javadoc) {
+                options.addStringOption('Xdoclint:none', '-quiet')
+            }
+        }
+    }
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+
+artifacts {
+    archives androidSourcesJar
+    archives androidJavadocsJar
+}
