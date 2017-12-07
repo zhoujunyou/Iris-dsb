@@ -3,6 +3,7 @@ package com.zjy.leanrxjava.appmanagers
 import android.app.Application
 import com.mwee.android.mweebase.base.GlobalCache
 import com.zjy.leanrxjava.BuildConfig
+import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,6 +36,15 @@ class TimberManager @Inject constructor():AppManager {
 class GlobalCacheManager @Inject constructor() :AppManager{
     override fun init(application: Application) {
         GlobalCache.getInstance().registerContext(application)
+    }
+
+}
+
+class SQLiteStudioManager @Inject constructor():AppManager{
+    override fun init(application: Application) {
+        if(BuildConfig.DEBUG){
+            SQLiteStudioService.instance().start(application)
+        }
     }
 
 }

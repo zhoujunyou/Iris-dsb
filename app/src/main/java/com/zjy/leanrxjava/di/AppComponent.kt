@@ -1,6 +1,7 @@
 package com.zjy.leanrxjava.di
 
 import android.app.Application
+import com.zjy.data.DataBaseModule
 import com.zjy.leanrxjava.App
 import com.zjy.leanrxjava.login.LoginBuilder
 import dagger.BindsInstance
@@ -14,7 +15,8 @@ import javax.inject.Singleton
     AndroidSupportInjectionModule::class,
     ApplicationModule::class,
     LoginBuilder::class,
-    ViewModelBuilder::class
+    ViewModelBuilder::class,
+    DataBaseModule::class
 ])
 interface AppComponent : AndroidInjector<App> {
 

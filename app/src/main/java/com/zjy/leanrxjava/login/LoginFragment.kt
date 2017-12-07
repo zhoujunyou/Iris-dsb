@@ -49,13 +49,20 @@ class LoginFragment
         }
         var btnLogin = view.findViewById<Button>(R.id.btnLogin)
         btnLogin.setOnClickListener { viewModel.login() }
-        RxTextView.textChanges(editUser).skip(1).subscribe(viewModel.userName)
-        RxTextView.textChanges(editPassword).skip(1).subscribe(viewModel.password)
+        RxTextView.textChanges(editUser).skip(1).subscribe(viewModel.userNameObsevable)
+        RxTextView.textChanges(editPassword).skip(1).subscribe(viewModel.passwordObservable)
+        viewModel.loadUser()
 
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel.user.observeK(this){
+            it?.let {
+                editUser.setText(it.userName)
+                editPassword.setText(it.password)
+            }
+        }
         viewModel.response.observeK(this) {
             when (it?.status) {
                 Response.Status.SUCCESS -> {

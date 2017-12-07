@@ -29,8 +29,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
-    annotationProcessor rootProject.ext.aptDependencies["autoValue"]
-    provided rootProject.aptDependencies.autoValue // for ide
+//    annotationProcessor rootProject.ext.aptDependencies["autoValue"]
+//    provided rootProject.aptDependencies.autoValue // for ide
     compile rootProject.ext.dependencies["retrofit"]
     compile rootProject.ext.dependencies["retrofit-converter-gson"]
     compile rootProject.ext.dependencies["retrofit-adapter-rxjava2"]
@@ -38,6 +38,12 @@ dependencies {
     compile rootProject.ext.dependencies["okhttp3-logger"]
     compile rootProject.ext.dependencies["kotlin"]
     compile rootProject.ext.dependencies["mw-b"]
+    compile rootProject.ext.dependencies["room-runtime"]
+    compile rootProject.ext.dependencies["room-rxjava2"]
+    compile rootProject.ext.dependencies["dagger2"]
+    kapt rootProject.ext.aptDependencies["roomKpt"]
+    kapt rootProject.ext.aptDependencies["daggerApt"]
+
 
 }
 repositories {

@@ -7,6 +7,7 @@ import cn.mwee.android.pay.bsidedata.config.BSideDataConfig
 import cn.mwee.android.pay.bsidedata.source.BSideDataSource
 import com.zjy.leanrxjava.appmanagers.AppManagers
 import com.zjy.leanrxjava.appmanagers.GlobalCacheManager
+import com.zjy.leanrxjava.appmanagers.SQLiteStudioManager
 import com.zjy.leanrxjava.appmanagers.TimberManager
 import dagger.Module
 import dagger.Provides
@@ -20,8 +21,10 @@ import javax.inject.Singleton
     }
 
     @Provides
-    fun provideAppManagers(timberManager: TimberManager ,globalManagers: GlobalCacheManager): AppManagers {
-        return AppManagers(timberManager,globalManagers)
+    fun provideAppManagers(timberManager: TimberManager
+                           ,globalManagers: GlobalCacheManager
+                           ,sqLiteStudioManager: SQLiteStudioManager): AppManagers {
+        return AppManagers(timberManager,globalManagers,sqLiteStudioManager)
     }
 
     @Singleton
