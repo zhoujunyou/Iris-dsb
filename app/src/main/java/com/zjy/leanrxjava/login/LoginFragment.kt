@@ -49,7 +49,7 @@ class LoginFragment
         }
         var btnLogin = view.findViewById<Button>(R.id.btnLogin)
         btnLogin.setOnClickListener { viewModel.login() }
-        RxTextView.textChanges(editUser).skip(1).subscribe(viewModel.userNameObsevable)
+        RxTextView.textChanges(editUser).skip(1).subscribe(viewModel.userNameObservable)
         RxTextView.textChanges(editPassword).skip(1).subscribe(viewModel.passwordObservable)
         viewModel.loadUser()
 

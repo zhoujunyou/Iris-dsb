@@ -13,10 +13,13 @@ import android.arch.persistence.room.PrimaryKey
  *Date:2017/12/5
 
  */
-@Entity(tableName = "user")
+@Entity(tableName = "user" )
 data class User constructor(
         @ColumnInfo(name = "user_name")
         @PrimaryKey
         var userName: String="",
 
-        var password: String="")
+        var password: String="",
+
+        var vip: Int?=null
+        )

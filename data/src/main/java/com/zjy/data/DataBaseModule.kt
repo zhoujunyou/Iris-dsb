@@ -28,7 +28,9 @@ class DataBaseModule {
     @Singleton
     @Provides
     fun provideDataBase(context: Context): IrisDataBase {
-        return Room.databaseBuilder(context, IrisDataBase::class.java, DB_NAME).build()
+        return Room.databaseBuilder(context, IrisDataBase::class.java, DB_NAME)
+                .addMigrations(MIGRATION_1_2)
+                .build()
     }
 
     @Provides

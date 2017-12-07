@@ -25,7 +25,7 @@ import javax.inject.Inject
 
  */
 internal class LoginFragmentModel @Inject constructor(
-        val bsidedata: BSideDataSource,val irisDataBase: IrisDataBase) : RxAwareViewModel() {
+        val bsidedata: BSideDataSource,  val irisDataBase: IrisDataBase) : RxAwareViewModel() {
 
 
     val response = MutableLiveData<Response<Boolean>>()
@@ -34,24 +34,25 @@ internal class LoginFragmentModel @Inject constructor(
 
     val loginBtnStatus = MutableLiveData<Boolean>()
 
-    val user =MutableLiveData<User>()
+    val user = MutableLiveData<User>()
 
 
+    /**
+     * kotlin 声明一个属性的完整语法是
+
+    var <propertyName>[: <PropertyType>] [= <property_initializer>]
+    [<getter>]
+    [<setter>]
+     */
     /**
      * !! 操作符
 
     非空断言运算符（!!）将任何值转换为非空类型，若该值为空则抛出异常。
     我们可以写 b!! ，这会返回一个非空的 b 值  如果 b 为空，就会抛出一个 NPE 异常：
      */
-    val userNameObsevable = PublishSubject.create<CharSequence>()!!
 
-    /**
-     * 声明一个属性的完整语法是
+    val userNameObservable = PublishSubject.create<CharSequence>()!!
 
-    var <propertyName>[: <PropertyType>] [= <property_initializer>]
-    [<getter>]
-    [<setter>]
-     */
     val passwordObservable = PublishSubject.create<CharSequence>()!!
 
     /**
@@ -59,9 +60,10 @@ internal class LoginFragmentModel @Inject constructor(
      */
     init {
         disposables += Observable.combineLatest(
-                userNameObsevable, passwordObservable, BiFunction<CharSequence, CharSequence, Boolean> { user, password ->
-            user.isNotEmpty() && password.isNotEmpty()
-        }).subscribe({
+                userNameObservable, passwordObservable,
+                BiFunction<CharSequence, CharSequence, Boolean> { user, password ->
+                    user.isNotEmpty() && password.isNotEmpty()
+                }).subscribe({
             loginBtnStatus.value = it
         })
     }
@@ -80,14 +82,15 @@ internal class LoginFragmentModel @Inject constructor(
     }
 
 
-    fun loadUser(){
-        irisDataBase.userDao()
+    fun loadUser() {
+        disposables += irisDataBase.userDao()
                 .getUsers()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread()
+                )
                 .subscribe({
-                    if(it!=null&&it.isNotEmpty()){
-                        user.value=it[0]
+                    if (it != null && it.isNotEmpty()) {
+                        user.value = it[0]
                     }
                 })
     }
