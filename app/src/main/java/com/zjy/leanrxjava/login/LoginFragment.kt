@@ -13,6 +13,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import com.zjy.leanrxjava.R
 import com.zjy.leanrxjava.base.Response
 import com.zjy.leanrxjava.extensions.observeK
+import com.zjy.leanrxjava.util.TextViewBindAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
@@ -57,10 +58,10 @@ class LoginFragment
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.user.observeK(this){
+        viewModel.user.observeK(this) {
             it?.let {
-                editUser.setText(it.userName)
-                editPassword.setText(it.password)
+                TextViewBindAdapter.setText(editUser, it.userName)
+                TextViewBindAdapter.setText(editPassword, it.password)
             }
         }
         viewModel.response.observeK(this) {
@@ -78,13 +79,13 @@ class LoginFragment
 
         }
 
-        viewModel.loginBtnStatus.observeK(this){
+        viewModel.loginBtnStatus.observeK(this) {
             it?.let {
-                btnLogin.isEnabled=it
+                btnLogin.isEnabled = it
                 /**
                  * java 中a ? b : c  等价于 kotlin if (a) b else c
                  */
-                btnLogin.setBackgroundColor(if(it) Color.RED else Color.GRAY )
+                btnLogin.setBackgroundColor(if (it) Color.RED else Color.GRAY)
             }
         }
 

@@ -8,10 +8,10 @@ import com.zjy.data.login.User
 import com.zjy.leanrxjava.base.Response
 import com.zjy.leanrxjava.base.RxAwareViewModel
 import com.zjy.leanrxjava.extensions.plusAssign
+import com.zjy.leanrxjava.extensions.subscribeIoObserveUI
+import com.zjy.leanrxjava.extensions.withNotNullNorEmpty
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
  */
 internal class LoginFragmentModel @Inject constructor(
-        val bsidedata: BSideDataSource,  val irisDataBase: IrisDataBase) : RxAwareViewModel() {
+        val bsidedata: BSideDataSource, val irisDataBase: IrisDataBase) : RxAwareViewModel() {
 
 
     val response = MutableLiveData<Response<Boolean>>()
@@ -56,12 +56,13 @@ internal class LoginFragmentModel @Inject constructor(
     val passwordObservable = PublishSubject.create<CharSequence>()!!
 
     /**
-     * 主构造函数不能包含任何的代码。初始化的代码可以放到以 init 关键字作为前缀的初始化块（initializer blocks）中：
+     * 主构造函数不能包含任何的代码。初始化的代码可以放到以 init 关键字作为前缀的初始化块（initiallizer blocks）中：
      */
     init {
         disposables += Observable.combineLatest(
                 userNameObservable, passwordObservable,
                 BiFunction<CharSequence, CharSequence, Boolean> { user, password ->
+                    this@LoginFragmentModel.user.value = User(userName = user.toString(), password = password.toString())
                     user.isNotEmpty() && password.isNotEmpty()
                 }).subscribe({
             loginBtnStatus.value = it
@@ -70,8 +71,15 @@ internal class LoginFragmentModel @Inject constructor(
 
 
     fun login() {
+        /**
+         * a!=null&&a 等价于 a==true
+         */
+        if (loadStatus.value == true) return
         disposables += bsidedata.login(
-                LoginOptions.Builder().build())
+                LoginOptions.Builder()
+                        .setUserName(user.value?.userName)
+                        .setPassWord(user.value?.password)
+                        .build())
                 .doOnSubscribe { loadStatus.value = true }
                 .doAfterTerminate { loadStatus.value = false }
                 .subscribe({
@@ -85,11 +93,9 @@ internal class LoginFragmentModel @Inject constructor(
     fun loadUser() {
         disposables += irisDataBase.userDao()
                 .getUsers()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()
-                )
+                .subscribeIoObserveUI()
                 .subscribe({
-                    if (it != null && it.isNotEmpty()) {
+                    it.withNotNullNorEmpty {
                         user.value = it[0]
                     }
                 })
