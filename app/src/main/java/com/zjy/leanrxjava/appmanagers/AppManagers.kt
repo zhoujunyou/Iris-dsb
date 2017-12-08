@@ -25,6 +25,9 @@ class AppManagers(vararg val managers: AppManager):AppManager{
 
 }
 
+/**
+ * 日志工具 使用后的感受是不用每个库添加一个日志工具了 全用timber就可以搞定
+ */
 class TimberManager @Inject constructor():AppManager {
     override fun init(application: Application) {
         if(BuildConfig.DEBUG){
@@ -40,6 +43,11 @@ class GlobalCacheManager @Inject constructor() :AppManager{
 
 }
 
+
+/**
+ * http://www.jianshu.com/p/520a9055536f
+ * 数据库实时调试工具
+ */
 class SQLiteStudioManager @Inject constructor():AppManager{
     override fun init(application: Application) {
         if(BuildConfig.DEBUG){
